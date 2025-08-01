@@ -1,0 +1,182 @@
+/* src/app/signup/signup.page.scss */
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: 20px;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 16px;
+  // box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.custom-input-item {
+  // --background: #f8f9fa;
+  --border-radius: 12px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+
+  &:hover {
+    // --background: #f1f3f4;
+  }
+
+  &.item-has-focus {
+    // --background: #ffffff;
+    border-color: var(--ion-color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--ion-color-primary-rgb), 0.1);
+  }
+
+  &.error-item {
+    border-color: var(--ion-color-danger) !important;
+    // --background: #ffeaea;
+    
+    &.item-has-focus {
+      box-shadow: 0 0 0 3px rgba(var(--ion-color-danger-rgb), 0.1);
+    }
+  }
+}
+
+.input-icon {
+  margin-right: 12px;
+  color: var(--ion-color-medium);
+  font-size: 1.2em;
+}
+
+.error-item .input-icon {
+  color: var(--ion-color-danger);
+}
+
+.password-toggle {
+  cursor: pointer;
+  color: var(--ion-color-medium);
+  font-size: 1.2em;
+  padding: 4px;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--ion-color-primary);
+  }
+}
+
+.error-message {
+  display: block;
+  font-size: 12px;
+  color: var(--ion-color-danger);
+  margin: -4px 0 8px 16px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+.form-error-summary {
+  background: rgba(var(--ion-color-danger-rgb), 0.1);
+  border: 1px solid var(--ion-color-danger);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px 0;
+  text-align: center;
+  
+  small {
+    color: var(--ion-color-danger);
+    font-weight: 500;
+  }
+}
+
+.signup-button {
+  --border-radius: 12px;
+  height: 48px;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+
+  &:not(.button-disabled) {
+    --background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(var(--ion-color-primary-rgb), 0.3);
+    }
+  }
+
+  &.button-disabled {
+    --background: var(--ion-color-medium);
+    --color: var(--ion-color-light);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.signin-link {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  margin-top: 24px;
+
+  a {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Animation for error messages
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .signup-container {
+    padding: 16px;
+  }
+  
+  .signup-card {
+    margin: 0;
+  }
+}
+
+// Focus styles for better accessibility
+ion-input:focus-within,
+ion-textarea:focus-within {
+  --background: transparent;
+}
+
+// Custom validation state colors
+.ng-valid.ng-touched .custom-input-item {
+  border-color: var(--ion-color-success);
+  
+  .input-icon {
+    color: var(--ion-color-success);
+  }
+}
+
+// Success message styling (if needed)
+.success-message {
+  color: var(--ion-color-success);
+  background: rgba(var(--ion-color-success-rgb), 0.1);
+  border: 1px solid var(--ion-color-success);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px 0;
+  text-align: center;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}

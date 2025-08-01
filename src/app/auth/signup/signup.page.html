@@ -1,0 +1,113 @@
+<!-- src/app/signup/signup.page.html -->
+<ion-content class="ion-padding">
+  <div class="signup-container">
+    <ion-card class="signup-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Create Account</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Full Name Input -->
+          <ion-item lines="none" class="ion-margin-bottom custom-input-item" 
+                    [class.error-item]="name?.invalid && (name?.dirty || name?.touched)">
+            <ion-input
+              type="text"
+              placeholder="Full Name"
+              name="name"
+              formControlName="name"
+              class="custom-input"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="getErrorMessage('name')">
+            <small class="error-message">{{ getErrorMessage('name') }}</small>
+          </ion-text>
+
+          <!-- Email Input -->
+          <ion-item lines="none" class="ion-margin-bottom custom-input-item"
+                    [class.error-item]="email?.invalid && (email?.dirty || email?.touched)">
+            <ion-input
+              type="email"
+              placeholder="Email Address"
+              name="email"
+              formControlName="email"
+              class="custom-input"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="getErrorMessage('email')">
+            <small class="error-message">{{ getErrorMessage('email') }}</small>
+          </ion-text>
+
+          <!-- Password Input -->
+          <ion-item lines="none" class="ion-margin-bottom custom-input-item"
+                    [class.error-item]="password?.invalid && (password?.dirty || password?.touched)">
+            <ion-input
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Password"
+              name="password"
+              formControlName="password"
+              class="custom-input"
+            ></ion-input>
+           
+          </ion-item>
+          <ion-text color="danger" *ngIf="getErrorMessage('password')">
+            <small class="error-message">{{ getErrorMessage('password') }}</small>
+          </ion-text>
+
+          <!-- Phone Input -->
+          <ion-item lines="none" class="ion-margin-bottom custom-input-item"
+                    [class.error-item]="phone?.invalid && (phone?.dirty || phone?.touched)">
+            <ion-input
+              type="tel"
+              placeholder="Phone Number (Optional)"
+              name="phone"
+              formControlName="phone"
+              class="custom-input"
+            ></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="getErrorMessage('phone')">
+            <small class="error-message">{{ getErrorMessage('phone') }}</small>
+          </ion-text>
+
+          <!-- Address Input -->
+          <ion-item lines="none" class="ion-margin-bottom custom-input-item"
+                    [class.error-item]="address?.invalid && (address?.dirty || address?.touched)">
+            <ion-textarea
+              placeholder="Address (Optional)"
+              name="address"
+              formControlName="address"
+              class="custom-input"
+              rows="3"
+            ></ion-textarea>
+          </ion-item>
+          <ion-text color="danger" *ngIf="getErrorMessage('address')">
+            <small class="error-message">{{ getErrorMessage('address') }}</small>
+          </ion-text>
+
+          <!-- Form Validation Summary -->
+          <ion-text color="danger" *ngIf="signupForm.invalid && signupForm.touched">
+            <div class="form-error-summary">
+              <small>Please fix the errors above before submitting</small>
+            </div>
+          </ion-text>
+
+          <!-- Sign Up Button -->
+          <ion-button 
+            expand="block" 
+            type="submit" 
+            class="ion-margin-top signup-button"
+            [disabled]="signupForm.invalid">
+            Sign Up
+          </ion-button>
+        </form>
+
+        <!-- Sign In Link -->
+        <p class="ion-text-center ion-margin-top signin-link">
+          Already have an account?
+          <a href="#" class="ion-color-primary ion-text-decoration-none">Sign In</a>
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
