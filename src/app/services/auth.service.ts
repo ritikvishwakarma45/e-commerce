@@ -1,12 +1,17 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, updateProfile, UserCredential } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, UserCredential } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { 
   Firestore, 
   doc, 
   setDoc, 
-  DocumentReference 
+  DocumentReference, 
+  docData,
+  getDoc
 } from '@angular/fire/firestore';
+
+// import { getDoc, doc, Firestore } from 'firebase/firestore';
+// import { getAuth, onAuthStateChanged, Auth, User } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root' // This is crucial for tree-shaking and global availability
@@ -64,4 +69,48 @@ export class AuthService {
        });
    });
   }
+
+  async getCurrentUserDataAndDoc(): Promise<any | null> {
+  // Return a promise that resolves only once the auth state is known.
+  return new Promise((resolve) => {
+    // This listener will be called immediately with the current state and then whenever the state changes.
+    // We only need the first emission, so we unsubscribe immediately after.
+    const unsubscribe = onAuthStateChanged(this.auth, async (user: any | null) => {
+      unsubscribe(); // Clean up the listener after the first check
+
+      // If a user is logged in
+      if (user) {
+        try {
+          // Get a reference to the user's document in the 'users' collection
+          const userDocRef = doc(this.db, 'users', user.uid);
+          
+          // Fetch the document data using the native getDoc function, which returns a promise
+          const userDocSnap = await getDoc(userDocRef);
+
+          // If the document exists, extract the data
+          if (userDocSnap.exists()) {
+            const userData:any = userDocSnap.data();
+            
+            // Combine the data and add the isAdmin flag
+            const currentUser = {
+              uid: user.uid,
+              ...userData,
+              isAdmin: userData.role === 'admin'
+            };
+            resolve(currentUser);
+          } else {
+            // User is authenticated, but their document does not exist
+            resolve(null);
+          }
+        } catch (error) {
+          console.error('Error fetching user data from Firestore:', error);
+          resolve(null);
+        }
+      } else {
+        // No user is authenticated
+        resolve(null);
+      }
+    });
+  });
+}
 }

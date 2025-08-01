@@ -46,6 +46,9 @@ export class _SignupPage {
   constructor() { }
 
   ngOnInit() {
+    this.authService.getCurrentUserDataAndDoc().then((user) => {
+      console.log(user);
+    })
   }
 
   // Getter methods for easy access to form controls
