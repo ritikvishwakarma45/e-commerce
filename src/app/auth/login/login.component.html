@@ -1,0 +1,94 @@
+<ion-content [fullscreen]="true" class="login-content">
+  
+  <!-- Background Design -->
+  <div class="background-design">
+    <div class="gradient-overlay"></div>
+    <div class="floating-circles">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+    </div>
+  </div>
+
+  <div class="login-container">
+    
+    <!-- Brand Section -->
+    <div class="brand-section">
+      <div class="logo-wrapper">
+        <!-- <ion-icon name="shield-checkmark" class="brand-logo"></ion-icon> -->
+      </div>
+      <ion-text class="brand-title">
+        <h1>Welcome Back</h1>
+      </ion-text>
+      <ion-text color="medium" class="brand-subtitle">
+        <p>Sign in to continue to your account</p>
+      </ion-text>
+    </div>
+
+    <!-- Login Card -->
+    <ion-card class="login-card">
+      <ion-card-content class="login-card-content">
+        
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+          
+          <!-- Email Input -->
+          <div class="input-group">
+            <ion-item 
+              class="input-item" 
+              [class.input-error]="emailError"
+              lines="none">
+              <ion-label position="stacked" class="input-label">Email</ion-label>
+              <ion-input
+                type="email"
+                formControlName="email"
+                placeholder="Enter your email"
+                class="custom-input">
+              </ion-input>
+            </ion-item>
+            @if(emailError){
+              <ion-text color="danger" class="error-text">
+                <small>{{ emailError }}</small>
+              </ion-text>
+            }
+          </div>
+
+          <!-- Password Input -->
+          <div class="input-group">
+            <ion-item 
+              class="input-item" 
+              [class.input-error]="passwordError"
+              lines="none">
+              <ion-label position="stacked" class="input-label">Password</ion-label>
+              <ion-input
+                [type]="'password'"
+                formControlName="password"
+                placeholder="Enter your password"
+                class="custom-input">
+              </ion-input>
+            </ion-item>
+            @if(passwordError){
+              <ion-text color="danger" class="error-text" >
+                <small>{{ passwordError }}</small>
+              </ion-text>
+            }
+          </div>
+
+          @if(errorMessage){
+            <ion-text color="danger" class="error-text ion-text-center">
+              <small>{{ errorMessage }}</small>
+            </ion-text>
+          }
+          <ion-button
+          (click)="onLogin()"
+            expand="block"
+            type="submit"
+            class="login-button"
+            size="large">
+            <span>Sign In</span>
+          </ion-button>
+
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

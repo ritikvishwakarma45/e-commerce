@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, UserCredential } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateProfile, UserCredential } from '@angular/fire/auth';
+import { from, Observable } from 'rxjs';
 import { 
   Firestore, 
   doc, 
@@ -70,7 +70,7 @@ export class AuthService {
    });
   }
 
-  async getCurrentUserDataAndDoc(): Promise<any | null> {
+  async getCurrentUserData(): Promise<any | null> {
   // Return a promise that resolves only once the auth state is known.
   return new Promise((resolve) => {
     // This listener will be called immediately with the current state and then whenever the state changes.
@@ -113,4 +113,10 @@ export class AuthService {
     });
   });
 }
+
+  login(value:any): Observable<UserCredential> {
+    // signInWithEmailAndPassword returns a Promise, so we use `from` to convert it to an Observable.
+    return from(signInWithEmailAndPassword(this.auth, value.email, value.password));
+  }
+
 }

@@ -46,7 +46,7 @@ export class _SignupPage {
   constructor() { }
 
   ngOnInit() {
-    this.authService.getCurrentUserDataAndDoc().then((user) => {
+    this.authService.getCurrentUserData().then((user) => {
       console.log(user);
     })
   }
