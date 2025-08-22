@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -88,14 +88,14 @@ export class CategoriesPage implements OnInit, OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private productService: ProductItemService,
-    private itemService: ItemService,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
-  ) {
+  private fb = inject(FormBuilder);
+  private productService = inject(ProductItemService);
+  private itemService = inject(ItemService);
+  private router = inject(Router);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+
+  constructor() {
     addIcons({
       addOutline,
       createOutline,

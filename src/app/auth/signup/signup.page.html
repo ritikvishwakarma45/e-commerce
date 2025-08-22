@@ -20,9 +20,11 @@
               class="custom-input"
             ></ion-input>
           </ion-item>
-          <ion-text color="danger" *ngIf="getErrorMessage('name')">
-            <small class="error-message">{{ getErrorMessage('name') }}</small>
-          </ion-text>
+          @if (getErrorMessage('name')) {
+            <ion-text color="danger">
+              <small class="error-message">{{ getErrorMessage('name') }}</small>
+            </ion-text>
+          }
 
           <!-- Email Input -->
           <ion-item lines="none" class="ion-margin-bottom custom-input-item"
@@ -35,9 +37,11 @@
               class="custom-input"
             ></ion-input>
           </ion-item>
-          <ion-text color="danger" *ngIf="getErrorMessage('email')">
-            <small class="error-message">{{ getErrorMessage('email') }}</small>
-          </ion-text>
+          @if (getErrorMessage('email')) {
+            <ion-text color="danger">
+              <small class="error-message">{{ getErrorMessage('email') }}</small>
+            </ion-text>
+          }
 
           <!-- Password Input -->
           <ion-item lines="none" class="ion-margin-bottom custom-input-item"
@@ -51,9 +55,11 @@
             ></ion-input>
            
           </ion-item>
-          <ion-text color="danger" *ngIf="getErrorMessage('password')">
-            <small class="error-message">{{ getErrorMessage('password') }}</small>
-          </ion-text>
+          @if (getErrorMessage('password')) {
+            <ion-text color="danger">
+              <small class="error-message">{{ getErrorMessage('password') }}</small>
+            </ion-text>
+          }
 
           <!-- Phone Input -->
           <ion-item lines="none" class="ion-margin-bottom custom-input-item"
@@ -66,9 +72,11 @@
               class="custom-input"
             ></ion-input>
           </ion-item>
-          <ion-text color="danger" *ngIf="getErrorMessage('phone')">
-            <small class="error-message">{{ getErrorMessage('phone') }}</small>
-          </ion-text>
+          @if (getErrorMessage('phone')) {
+            <ion-text color="danger">
+              <small class="error-message">{{ getErrorMessage('phone') }}</small>
+            </ion-text>
+          }
 
           <!-- Address Input -->
           <ion-item lines="none" class="ion-margin-bottom custom-input-item"
@@ -81,16 +89,20 @@
               rows="3"
             ></ion-textarea>
           </ion-item>
-          <ion-text color="danger" *ngIf="getErrorMessage('address')">
-            <small class="error-message">{{ getErrorMessage('address') }}</small>
-          </ion-text>
+          @if (getErrorMessage('address')) {
+            <ion-text color="danger">
+              <small class="error-message">{{ getErrorMessage('address') }}</small>
+            </ion-text>
+          }
 
           <!-- Form Validation Summary -->
-          <ion-text color="danger" *ngIf="signupForm.invalid && signupForm.touched">
-            <div class="form-error-summary">
-              <small>Please fix the errors above before submitting</small>
-            </div>
-          </ion-text>
+          @if (signupForm.invalid && signupForm.touched) {
+            <ion-text color="danger">
+              <div class="form-error-summary">
+                <small>Please fix the errors above before submitting</small>
+              </div>
+            </ion-text>
+          }
 
           <!-- Sign Up Button -->
           <ion-button 

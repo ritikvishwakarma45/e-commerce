@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -84,14 +84,14 @@ export class ProductFormPage implements OnInit, OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private productService: ProductItemService,
-    private itemService: ItemService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toastController: ToastController
-  ) {
+  private fb = inject(FormBuilder);
+  private productService = inject(ProductItemService);
+  private itemService = inject(ItemService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private toastController = inject(ToastController);
+
+  constructor() {
     addIcons({
       saveOutline,
       closeOutline,
@@ -187,7 +187,7 @@ export class ProductFormPage implements OnInit, OnDestroy {
             categoryId: product.categoryId,
             imageUrl: product.imageUrl || '',
             stock: product.stock,
-            sku: product.sku,
+            sku: product.sku || '',
             isActive: product.isActive
           });
         } else {

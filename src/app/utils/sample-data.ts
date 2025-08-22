@@ -1,8 +1,11 @@
+import { inject } from '@angular/core';
 import { ProductItemService } from '../services/product-item.service';
 import { Category, ProductFormData } from '../models/product.model';
 
 export class SampleDataGenerator {
-  constructor(private productService: ProductItemService) {}
+  private productService = inject(ProductItemService);
+  
+  constructor() {}
 
   async generateSampleData(): Promise<void> {
     try {

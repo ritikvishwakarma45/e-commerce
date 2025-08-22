@@ -10,13 +10,16 @@
 <ion-content [fullscreen]="true">
   <div class="form-container">
     <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="loading-container">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading item details...</p>
-    </div>
+    @if (isLoading) {
+      <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading item details...</p>
+      </div>
+    }
 
     <!-- Item Form -->
-    <form *ngIf="!isLoading" [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+    @if (!isLoading) {
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
       <ion-card>
         <ion-card-header>
           <ion-card-title>Item Information</ion-card-title>
@@ -31,9 +34,11 @@
               placeholder="Enter item name"
               maxlength="100">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('name')">
-              {{ getFieldError('name') }}
-            </ion-note>
+            @if (isFieldInvalid('name')) {
+              <ion-note slot="error">
+                {{ getFieldError('name') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Description -->
@@ -45,9 +50,11 @@
               rows="3"
               maxlength="500">
             </ion-textarea>
-            <ion-note slot="error" *ngIf="isFieldInvalid('description')">
-              {{ getFieldError('description') }}
-            </ion-note>
+            @if (isFieldInvalid('description')) {
+              <ion-note slot="error">
+                {{ getFieldError('description') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Category -->
@@ -57,13 +64,17 @@
               formControlName="categoryId"
               placeholder="Select a category"
               interface="popover">
-              <ion-select-option *ngFor="let category of categories" [value]="category.id">
-                {{ category.name }}
-              </ion-select-option>
+              @for (category of categories; track category.id) {
+                <ion-select-option [value]="category.id">
+                  {{ category.name }}
+                </ion-select-option>
+              }
             </ion-select>
-            <ion-note slot="error" *ngIf="isFieldInvalid('categoryId')">
-              {{ getFieldError('categoryId') }}
-            </ion-note>
+            @if (isFieldInvalid('categoryId')) {
+              <ion-note slot="error">
+                {{ getFieldError('categoryId') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Price -->
@@ -76,9 +87,11 @@
               min="0"
               placeholder="0.00 (optional)">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('price')">
-              {{ getFieldError('price') }}
-            </ion-note>
+            @if (isFieldInvalid('price')) {
+              <ion-note slot="error">
+                {{ getFieldError('price') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Image URL -->
@@ -88,15 +101,19 @@
               formControlName="imageUrl"
               placeholder="https://example.com/image.jpg">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('imageUrl')">
-              {{ getFieldError('imageUrl') }}
-            </ion-note>
+            @if (isFieldInvalid('imageUrl')) {
+              <ion-note slot="error">
+                {{ getFieldError('imageUrl') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Image Preview -->
-          <div *ngIf="itemForm.get('imageUrl')?.value" class="image-preview">
-            <img [src]="itemForm.get('imageUrl')?.value" [alt]="itemForm.get('name')?.value" />
-          </div>
+          @if (itemForm.get('imageUrl')?.value) {
+            <div class="image-preview">
+              <img [src]="itemForm.get('imageUrl')?.value" [alt]="itemForm.get('name')?.value" />
+            </div>
+          }
 
           <!-- Active Status -->
           <ion-item lines="none">
@@ -122,39 +139,45 @@
         </ion-card-header>
 
         <ion-card-content>
-          <div *ngIf="specificationsArray.length === 0" class="no-specs">
-            <p>No specifications added yet. Click "Add" to add specifications.</p>
-          </div>
-
-          <ion-list *ngIf="specificationsArray.length > 0">
-            <div *ngFor="let spec of specificationsArray.controls; let i = index" class="spec-group">
-              <div class="spec-inputs">
-                <ion-item lines="none">
-                  <ion-label position="stacked">Property</ion-label>
-                  <ion-input
-                    [formControl]="$any(spec.get('key'))"
-                    placeholder="e.g., Color, Size, Material">
-                  </ion-input>
-                </ion-item>
-                
-                <ion-item lines="none">
-                  <ion-label position="stacked">Value</ion-label>
-                  <ion-input
-                    [formControl]="$any(spec.get('value'))"
-                    placeholder="e.g., Red, Large, Cotton">
-                  </ion-input>
-                </ion-item>
-
-                <ion-button 
-                  fill="clear" 
-                  color="danger" 
-                  size="small" 
-                  (click)="removeSpecification(i)">
-                  <ion-icon name="trash-outline"></ion-icon>
-                </ion-button>
-              </div>
+          @if (specificationsArray.length === 0) {
+            <div class="no-specs">
+              <p>No specifications added yet. Click "Add" to add specifications.</p>
             </div>
-          </ion-list>
+          }
+
+          @if (specificationsArray.length > 0) {
+            <ion-list>
+              @for (spec of specificationsArray.controls; track $index; let i = $index) {
+                <div class="spec-group">
+                  <div class="spec-inputs">
+                    <ion-item lines="none">
+                      <ion-label position="stacked">Property</ion-label>
+                      <ion-input
+                        [formControl]="$any(spec.get('key'))"
+                        placeholder="e.g., Color, Size, Material">
+                      </ion-input>
+                    </ion-item>
+                    
+                    <ion-item lines="none">
+                      <ion-label position="stacked">Value</ion-label>
+                      <ion-input
+                        [formControl]="$any(spec.get('value'))"
+                        placeholder="e.g., Red, Large, Cotton">
+                      </ion-input>
+                    </ion-item>
+
+                    <ion-button 
+                      fill="clear" 
+                      color="danger" 
+                      size="small" 
+                      (click)="removeSpecification(i)">
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+                </div>
+              }
+            </ion-list>
+          }
         </ion-card-content>
       </ion-card>
 
@@ -165,8 +188,11 @@
           type="submit"
           [disabled]="isSaving || itemForm.invalid"
           color="primary">
-          <ion-spinner *ngIf="isSaving" name="crescent" slot="start"></ion-spinner>
-          <ion-icon *ngIf="!isSaving" name="save-outline" slot="start"></ion-icon>
+          @if (isSaving) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          } @else {
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+          }
           {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Item' : 'Create Item') }}
         </ion-button>
 
@@ -179,6 +205,7 @@
           Cancel
         </ion-button>
       </div>
-    </form>
+      </form>
+    }
   </div>
 </ion-content>

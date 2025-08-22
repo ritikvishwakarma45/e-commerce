@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -90,12 +90,12 @@ export class ProductsPage implements OnInit, OnDestroy {
   
   private subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private productService: ProductItemService,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
-  ) {
+  private productService = inject(ProductItemService);
+  private router = inject(Router);
+  private alertController = inject(AlertController);
+  private toastController = inject(ToastController);
+
+  constructor() {
     addIcons({
       addOutline,
       createOutline,
@@ -139,8 +139,8 @@ export class ProductsPage implements OnInit, OnDestroy {
       this.filteredProducts = this.products.filter(product =>
         product.name.toLowerCase().includes(this.searchTerm) ||
         product.description.toLowerCase().includes(this.searchTerm) ||
-        product.categoryName?.toLowerCase().includes(this.searchTerm) ||
-        product.sku.toLowerCase().includes(this.searchTerm)
+        product.categoryName?.toLowerCase().includes(this.searchTerm) 
+        // product.sku.toLowerCase().includes(this.searchTerm)
       );
     }
   }

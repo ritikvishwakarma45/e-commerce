@@ -10,57 +10,69 @@
 <ion-content [fullscreen]="true">
   <div class="categories-container">
     <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="loading-container">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading categories...</p>
-    </div>
+    @if (isLoading) {
+      <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading categories...</p>
+      </div>
+    }
 
     <!-- Categories List -->
-    <div *ngIf="!isLoading">
-      <div *ngIf="categories.length === 0" class="empty-state">
-        <ion-icon name="pricetags-outline" class="empty-icon"></ion-icon>
-        <h3>No categories found</h3>
-        <p>Start by creating your first category</p>
-        <ion-button fill="outline" (click)="openAddModal()">
-          <ion-icon name="add-outline" slot="start"></ion-icon>
-          Add Category
-        </ion-button>
-      </div>
+    @if (!isLoading) {
+      @if (categories.length === 0) {
+        <div class="empty-state">
+          <ion-icon name="pricetags-outline" class="empty-icon"></ion-icon>
+          <h3>No categories found</h3>
+          <p>Start by creating your first category</p>
+          <ion-button fill="outline" (click)="openAddModal()">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Add Category
+          </ion-button>
+        </div>
+      }
 
-      <ion-list *ngIf="categories.length > 0">
-        <ion-item *ngFor="let category of categories" lines="full">
-          <ion-label>
-            <h2>{{ category.name }}</h2>
-            <p *ngIf="category.description">{{ category.description }}</p>
-            <div class="category-meta">
-              <ion-badge [color]="category.isActive ? 'success' : 'medium'">
-                {{ category.isActive ? 'Active' : 'Inactive' }}
-              </ion-badge>
-              <ion-badge color="primary" *ngIf="category.itemCount !== undefined">
-                {{ category.itemCount }} items
-              </ion-badge>
-              <span class="created-date">
-                Created: {{ category.createdAt | date:'short' }}
-              </span>
-            </div>
-          </ion-label>
-          <div class="category-actions">
-            <ion-button fill="clear" size="small" (click)="viewCategoryItems(category)" title="View Items">
-              <ion-icon name="list-outline"></ion-icon>
-            </ion-button>
-            <ion-button fill="clear" size="small" (click)="addItemToCategory(category)" title="Add Item">
-              <ion-icon name="add-outline"></ion-icon>
-            </ion-button>
-            <ion-button fill="clear" size="small" (click)="openEditModal(category)" title="Edit Category">
-              <ion-icon name="create-outline"></ion-icon>
-            </ion-button>
-            <ion-button fill="clear" color="danger" size="small" (click)="deleteCategory(category)" title="Delete Category">
-              <ion-icon name="trash-outline"></ion-icon>
-            </ion-button>
-          </div>
-        </ion-item>
-      </ion-list>
-    </div>
+      @if (categories.length > 0) {
+        <ion-list>
+          @for (category of categories; track category.id) {
+            <ion-item lines="full">
+              <ion-label>
+                <h2>{{ category.name }}</h2>
+                @if (category.description) {
+                  <p>{{ category.description }}</p>
+                }
+                <div class="category-meta">
+                  <ion-badge [color]="category.isActive ? 'success' : 'medium'">
+                    {{ category.isActive ? 'Active' : 'Inactive' }}
+                  </ion-badge>
+                  @if (category.itemCount !== undefined) {
+                    <ion-badge color="primary">
+                      {{ category.itemCount }} items
+                    </ion-badge>
+                  }
+                  <span class="created-date">
+                    Created: {{ category.createdAt | date:'short' }}
+                  </span>
+                </div>
+              </ion-label>
+              <div class="category-actions">
+                <ion-button fill="clear" size="small" (click)="viewCategoryItems(category)" title="View Items">
+                  <ion-icon name="list-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" size="small" (click)="addItemToCategory(category)" title="Add Item">
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" size="small" (click)="openEditModal(category)" title="Edit Category">
+                  <ion-icon name="create-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" color="danger" size="small" (click)="deleteCategory(category)" title="Delete Category">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    }
   </div>
 
   <!-- Floating Action Button -->
@@ -97,9 +109,11 @@
                     placeholder="Enter category name"
                     maxlength="50">
                   </ion-input>
-                  <ion-note slot="error" *ngIf="isFieldInvalid('name')">
-                    {{ getFieldError('name') }}
-                  </ion-note>
+                  @if (isFieldInvalid('name')) {
+                    <ion-note slot="error">
+                      {{ getFieldError('name') }}
+                    </ion-note>
+                  }
                 </ion-item>
 
                 <!-- Description -->
@@ -111,9 +125,11 @@
                     rows="3"
                     maxlength="200">
                   </ion-textarea>
-                  <ion-note slot="error" *ngIf="isFieldInvalid('description')">
-                    {{ getFieldError('description') }}
-                  </ion-note>
+                  @if (isFieldInvalid('description')) {
+                    <ion-note slot="error">
+                      {{ getFieldError('description') }}
+                    </ion-note>
+                  }
                 </ion-item>
 
                 <!-- Active Status -->
@@ -134,8 +150,11 @@
                 type="submit"
                 [disabled]="isSaving || categoryForm.invalid"
                 color="primary">
-                <ion-spinner *ngIf="isSaving" name="crescent" slot="start"></ion-spinner>
-                <ion-icon *ngIf="!isSaving" name="save-outline" slot="start"></ion-icon>
+                @if (isSaving) {
+                  <ion-spinner name="crescent" slot="start"></ion-spinner>
+                } @else {
+                  <ion-icon name="save-outline" slot="start"></ion-icon>
+                }
                 {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Category' : 'Create Category') }}
               </ion-button>
 

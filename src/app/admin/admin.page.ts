@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
@@ -57,8 +57,9 @@ import {
   ]
 })
 export class AdminPage implements OnInit {
+  private router = inject(Router);
 
-  constructor(private router: Router) {
+  constructor() {
     addIcons({
       addOutline,
       peopleOutline,

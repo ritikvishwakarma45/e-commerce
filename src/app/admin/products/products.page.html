@@ -27,34 +27,47 @@
     </ion-searchbar>
 
     <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="loading-container">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading products...</p>
-    </div>
+    @if (isLoading) {
+      <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading products...</p>
+      </div>
+    }
 
     <!-- Products List -->
-    <div *ngIf="!isLoading">
-      <div *ngIf="filteredProducts.length === 0" class="empty-state">
-        <ion-icon name="search-outline" class="empty-icon"></ion-icon>
-        <h3>No products found</h3>
-        <p *ngIf="searchTerm">Try adjusting your search terms</p>
-        <p *ngIf="!searchTerm">Start by adding your first product</p>
-        <ion-button fill="outline" (click)="addProduct()">
-          <ion-icon name="add-outline" slot="start"></ion-icon>
-          Add Product
-        </ion-button>
-      </div>
+    @if (!isLoading) {
+      @if (filteredProducts.length === 0) {
+        <div class="empty-state">
+          <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+          <h3>No products found</h3>
+          @if (searchTerm) {
+            <p>Try adjusting your search terms</p>
+          }
+          @if (!searchTerm) {
+            <p>Start by adding your first product</p>
+          }
+          <ion-button fill="outline" (click)="addProduct()">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Add Product
+          </ion-button>
+        </div>
+      }
 
-      <ion-grid *ngIf="filteredProducts.length > 0">
-        <ion-row>
-          <ion-col size="12" size-md="6" size-lg="4" *ngFor="let product of filteredProducts">
-            <ion-card class="product-card">
-              <div class="product-image" *ngIf="product.imageUrl">
-                <img [src]="product.imageUrl" [alt]="product.name" />
-              </div>
-              <div class="product-image placeholder" *ngIf="!product.imageUrl">
-                <ion-icon name="image-outline"></ion-icon>
-              </div>
+      @if (filteredProducts.length > 0) {
+        <ion-grid>
+          <ion-row>
+            @for (product of filteredProducts; track product.id) {
+              <ion-col size="12" size-md="6" size-lg="4">
+                <ion-card class="product-card">
+                  @if (product.imageUrl) {
+                    <div class="product-image">
+                      <img [src]="product.imageUrl" [alt]="product.name" />
+                    </div>
+                  } @else {
+                    <div class="product-image placeholder">
+                      <ion-icon name="image-outline"></ion-icon>
+                    </div>
+                  }
 
               <ion-card-header>
                 <ion-card-title>{{ product.name }}</ion-card-title>
@@ -69,16 +82,22 @@
                   <ion-badge color="secondary">
                     {{ product.categoryName }}
                   </ion-badge>
-                  <ion-badge color="primary" *ngIf="product.items && product.items.length > 0">
-                    {{ product.items.length }} items
-                  </ion-badge>
+                  @if (product.items && product.items.length > 0) {
+                    <ion-badge color="primary">
+                      {{ product.items.length }} items
+                    </ion-badge>
+                  }
                 </div>
-                <div class="product-items" *ngIf="product.items && product.items.length > 0">
-                  <p class="items-label">Linked Items:</p>
-                  <ion-chip *ngFor="let item of product.items" color="tertiary">
-                    {{ item.name }} - ${{ item.price }}
-                  </ion-chip>
-                </div>
+                @if (product.items && product.items.length > 0) {
+                  <div class="product-items">
+                    <p class="items-label">Linked Items:</p>
+                    @for (item of product.items; track item.id) {
+                      <ion-chip color="tertiary">
+                        {{ item.name }} - ${{ item.price }}
+                      </ion-chip>
+                    }
+                  </div>
+                }
               </ion-card-header>
 
               <ion-card-content>
@@ -113,13 +132,15 @@
                     <ion-icon name="trash-outline" slot="start"></ion-icon>
                     Delete
                   </ion-button>
-                </div>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            }
+          </ion-row>
+        </ion-grid>
+      }
+    }
   </div>
 
   <!-- Floating Action Button -->

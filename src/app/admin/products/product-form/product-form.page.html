@@ -10,13 +10,16 @@
 <ion-content [fullscreen]="true">
   <div class="form-container">
     <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="loading-container">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading product details...</p>
-    </div>
+    @if (isLoading) {
+      <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading product details...</p>
+      </div>
+    }
 
     <!-- Product Form -->
-    <form *ngIf="!isLoading" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    @if (!isLoading) {
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <ion-card>
         <ion-card-header>
           <ion-card-title>Product Information</ion-card-title>
@@ -31,9 +34,11 @@
               placeholder="Enter product name"
               maxlength="100">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('name')">
-              {{ getFieldError('name') }}
-            </ion-note>
+            @if (isFieldInvalid('name')) {
+              <ion-note slot="error">
+                {{ getFieldError('name') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Description -->
@@ -45,9 +50,11 @@
               rows="4"
               maxlength="500">
             </ion-textarea>
-            <ion-note slot="error" *ngIf="isFieldInvalid('description')">
-              {{ getFieldError('description') }}
-            </ion-note>
+            @if (isFieldInvalid('description')) {
+              <ion-note slot="error">
+                {{ getFieldError('description') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Price -->
@@ -60,9 +67,11 @@
               min="0"
               placeholder="0.00">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('price')">
-              {{ getFieldError('price') }}
-            </ion-note>
+            @if (isFieldInvalid('price')) {
+              <ion-note slot="error">
+                {{ getFieldError('price') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Category -->
@@ -73,15 +82,17 @@
               placeholder="Select a category"
               interface="popover"
               (ionChange)="onCategoryChange()">
-              <ion-select-option 
-                *ngFor="let category of categories" 
-                [value]="category.id">
-                {{ category.name }}
-              </ion-select-option>
+              @for (category of categories; track category.id) {
+                <ion-select-option [value]="category.id">
+                  {{ category.name }}
+                </ion-select-option>
+              }
             </ion-select>
-            <ion-note slot="error" *ngIf="isFieldInvalid('categoryId')">
-              {{ getFieldError('categoryId') }}
-            </ion-note>
+            @if (isFieldInvalid('categoryId')) {
+              <ion-note slot="error">
+                {{ getFieldError('categoryId') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Stock -->
@@ -93,9 +104,11 @@
               min="0"
               placeholder="0">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('stock')">
-              {{ getFieldError('stock') }}
-            </ion-note>
+            @if (isFieldInvalid('stock')) {
+              <ion-note slot="error">
+                {{ getFieldError('stock') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- SKU -->
@@ -114,26 +127,30 @@
               [disabled]="!productForm.get('name')?.value">
               Generate
             </ion-button>
-            <ion-note slot="error" *ngIf="isFieldInvalid('sku')">
-              {{ getFieldError('sku') }}
-            </ion-note>
+            @if (isFieldInvalid('sku')) {
+              <ion-note slot="error">
+                {{ getFieldError('sku') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Items -->
-          <ion-item lines="full" *ngIf="availableItems.length > 0">
-            <ion-label position="stacked">Linked Items</ion-label>
-            <ion-select 
-              formControlName="itemIds" 
-              placeholder="Select items to link"
-              interface="popover"
-              multiple="true">
-              <ion-select-option 
-                *ngFor="let item of availableItems" 
-                [value]="item.id">
-                {{ item.name }} - ${{ item.price }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+          @if (availableItems.length > 0) {
+            <ion-item lines="full">
+              <ion-label position="stacked">Linked Items</ion-label>
+              <ion-select 
+                formControlName="itemIds" 
+                placeholder="Select items to link"
+                interface="popover"
+                multiple="true">
+                @for (item of availableItems; track item.id) {
+                  <ion-select-option [value]="item.id">
+                    {{ item.name }} - ${{ item.price }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+          }
 
           <!-- Image URL -->
           <ion-item [class.ion-invalid]="isFieldInvalid('imageUrl')" lines="full">
@@ -142,15 +159,19 @@
               formControlName="imageUrl"
               placeholder="https://example.com/image.jpg">
             </ion-input>
-            <ion-note slot="error" *ngIf="isFieldInvalid('imageUrl')">
-              {{ getFieldError('imageUrl') }}
-            </ion-note>
+            @if (isFieldInvalid('imageUrl')) {
+              <ion-note slot="error">
+                {{ getFieldError('imageUrl') }}
+              </ion-note>
+            }
           </ion-item>
 
           <!-- Image Preview -->
-          <div *ngIf="productForm.get('imageUrl')?.value" class="image-preview">
-            <img [src]="productForm.get('imageUrl')?.value" [alt]="productForm.get('name')?.value" />
-          </div>
+          @if (productForm.get('imageUrl')?.value) {
+            <div class="image-preview">
+              <img [src]="productForm.get('imageUrl')?.value" [alt]="productForm.get('name')?.value" />
+            </div>
+          }
 
           <!-- Active Status -->
           <ion-item lines="none">
@@ -170,8 +191,11 @@
           type="submit"
           [disabled]="isSaving || productForm.invalid"
           color="primary">
-          <ion-spinner *ngIf="isSaving" name="crescent" slot="start"></ion-spinner>
-          <ion-icon *ngIf="!isSaving" name="save-outline" slot="start"></ion-icon>
+          @if (isSaving) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          } @else {
+            <ion-icon name="save-outline" slot="start"></ion-icon>
+          }
           {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Product' : 'Create Product') }}
         </ion-button>
 
@@ -184,6 +208,7 @@
           Cancel
         </ion-button>
       </div>
-    </form>
+      </form>
+    }
   </div>
 </ion-content>

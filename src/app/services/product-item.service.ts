@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { 
   Firestore, 
   collection, 
@@ -22,12 +22,13 @@ import { ItemService } from './item.service';
   providedIn: 'root'
 })
 export class ProductItemService {
-  private productsCollection: CollectionReference;
-  private categoriesCollection: CollectionReference;
+  private firestore = inject(Firestore);
+  private itemService = inject(ItemService);
+  private productsCollection = collection(this.firestore, 'Products');
+  private categoriesCollection = collection(this.firestore, 'Categories');
 
-  constructor(private firestore: Firestore, private itemService: ItemService) {
-    this.productsCollection = collection(this.firestore, 'products');
-    this.categoriesCollection = collection(this.firestore, 'categories');
+  constructor() {
+    // Constructor is now empty since we're using inject() at class level
   }
 
   // Product CRUD Operations
@@ -48,7 +49,7 @@ export class ProductItemService {
   }
 
   editProduct(id: string, productData: Partial<ProductFormData>): Observable<void> {
-    const productDoc = doc(this.firestore, 'products', id);
+    const productDoc = doc(this.firestore, 'Products', id);
     const updateData = {
       ...productData,
       updatedAt: new Date()
@@ -63,7 +64,7 @@ export class ProductItemService {
   }
 
   deleteProduct(id: string): Observable<void> {
-    const productDoc = doc(this.firestore, 'products', id);
+    const productDoc = doc(this.firestore, 'Products', id);
     
     return from(deleteDoc(productDoc)).pipe(
       catchError(error => {
@@ -139,7 +140,7 @@ export class ProductItemService {
   }
 
   getProductById(id: string): Observable<Product | null> {
-    const productDoc = doc(this.firestore, 'products', id);
+    const productDoc = doc(this.firestore, 'Products', id);
     
     return from(getDoc(productDoc)).pipe(
       map(docSnap => {
@@ -211,7 +212,7 @@ export class ProductItemService {
   }
 
   updateCategory(id: string, categoryData: Partial<Category>): Observable<void> {
-    const categoryDoc = doc(this.firestore, 'categories', id);
+    const categoryDoc = doc(this.firestore, 'Categories', id);
     const updateData = {
       ...categoryData,
       updatedAt: new Date()
@@ -226,7 +227,7 @@ export class ProductItemService {
   }
 
   deleteCategory(id: string): Observable<void> {
-    const categoryDoc = doc(this.firestore, 'categories', id);
+    const categoryDoc = doc(this.firestore, 'Categories', id);
     
     return from(deleteDoc(categoryDoc)).pipe(
       catchError(error => {

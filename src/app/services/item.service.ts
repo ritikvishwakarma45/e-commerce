@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { 
   Firestore, 
   collection, 
@@ -21,12 +21,12 @@ import { Item, ItemFormData } from '../models/product.model';
   providedIn: 'root'
 })
 export class ItemService {
-  private itemsCollection: CollectionReference;
-  private categoriesCollection: CollectionReference;
+  private firestore = inject(Firestore);
+  private itemsCollection = collection(this.firestore, 'items');
+  private categoriesCollection = collection(this.firestore, 'categories');
 
-  constructor(private firestore: Firestore) {
-    this.itemsCollection = collection(this.firestore, 'items');
-    this.categoriesCollection = collection(this.firestore, 'categories');
+  constructor() {
+    // Constructor is now empty since we're using inject() at class level
   }
 
   // Item CRUD Operations

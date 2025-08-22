@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -84,14 +84,14 @@ export class ItemFormPage implements OnInit, OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  constructor(
-    private fb: FormBuilder,
-    private itemService: ItemService,
-    private productService: ProductItemService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toastController: ToastController
-  ) {
+  private fb = inject(FormBuilder);
+  private itemService = inject(ItemService);
+  private productService = inject(ProductItemService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private toastController = inject(ToastController);
+
+  constructor() {
     addIcons({
       saveOutline,
       closeOutline,
