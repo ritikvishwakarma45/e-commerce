@@ -1,0 +1,248 @@
+.items-container {
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.category-info-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .category-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .category-icon {
+      font-size: 32px;
+      color: var(--ion-color-primary);
+    }
+
+    h3 {
+      margin: 0 0 4px 0;
+      color: var(--ion-color-dark);
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 64px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 24px;
+  }
+}
+
+.item-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.item-image {
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ion-color-light);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.placeholder {
+    ion-icon {
+      font-size: 48px;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+.item-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  gap: 8px;
+
+  ion-chip {
+    margin: 0;
+    font-size: 0.8rem;
+  }
+}
+
+.item-description {
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-details {
+  margin-bottom: 16px;
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+
+    .label {
+      color: var(--ion-color-medium);
+      font-weight: 500;
+    }
+
+    .value {
+      color: var(--ion-color-dark);
+      font-weight: 600;
+
+      &.price {
+        color: var(--ion-color-success);
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+.specifications {
+  margin-top: 12px;
+
+  h4 {
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+    font-weight: 600;
+  }
+
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .spec-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    background: var(--ion-color-light);
+    border-radius: 4px;
+
+    .spec-label {
+      color: var(--ion-color-medium);
+      font-weight: 500;
+    }
+
+    .spec-value {
+      color: var(--ion-color-dark);
+    }
+  }
+}
+
+.item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+
+  ion-button {
+    flex: 1;
+    margin: 0;
+  }
+}
+
+ion-searchbar {
+  margin-bottom: 16px;
+  --background: var(--ion-color-light);
+  --border-radius: 12px;
+}
+
+ion-fab-button {
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .items-container {
+    padding: 12px;
+  }
+
+  .item-image {
+    height: 150px;
+  }
+
+  .item-actions {
+    flex-direction: column;
+    gap: 4px;
+
+    ion-button {
+      flex: none;
+    }
+  }
+
+  .category-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px !important;
+  }
+
+  .spec-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

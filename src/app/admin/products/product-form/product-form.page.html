@@ -1,0 +1,189 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/products"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="form-container">
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading product details...</p>
+    </div>
+
+    <!-- Product Form -->
+    <form *ngIf="!isLoading" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Product Information</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <!-- Product Name -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('name')" lines="full">
+            <ion-label position="stacked">Product Name *</ion-label>
+            <ion-input
+              formControlName="name"
+              placeholder="Enter product name"
+              maxlength="100">
+            </ion-input>
+            <ion-note slot="error" *ngIf="isFieldInvalid('name')">
+              {{ getFieldError('name') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- Description -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('description')" lines="full">
+            <ion-label position="stacked">Description *</ion-label>
+            <ion-textarea
+              formControlName="description"
+              placeholder="Enter product description"
+              rows="4"
+              maxlength="500">
+            </ion-textarea>
+            <ion-note slot="error" *ngIf="isFieldInvalid('description')">
+              {{ getFieldError('description') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- Price -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('price')" lines="full">
+            <ion-label position="stacked">Price ($) *</ion-label>
+            <ion-input
+              formControlName="price"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00">
+            </ion-input>
+            <ion-note slot="error" *ngIf="isFieldInvalid('price')">
+              {{ getFieldError('price') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- Category -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('categoryId')" lines="full">
+            <ion-label position="stacked">Category *</ion-label>
+            <ion-select 
+              formControlName="categoryId" 
+              placeholder="Select a category"
+              interface="popover"
+              (ionChange)="onCategoryChange()">
+              <ion-select-option 
+                *ngFor="let category of categories" 
+                [value]="category.id">
+                {{ category.name }}
+              </ion-select-option>
+            </ion-select>
+            <ion-note slot="error" *ngIf="isFieldInvalid('categoryId')">
+              {{ getFieldError('categoryId') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- Stock -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('stock')" lines="full">
+            <ion-label position="stacked">Stock Quantity *</ion-label>
+            <ion-input
+              formControlName="stock"
+              type="number"
+              min="0"
+              placeholder="0">
+            </ion-input>
+            <ion-note slot="error" *ngIf="isFieldInvalid('stock')">
+              {{ getFieldError('stock') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- SKU -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('sku')" lines="full">
+            <ion-label position="stacked">SKU *</ion-label>
+            <ion-input
+              formControlName="sku"
+              placeholder="Enter SKU"
+              maxlength="50">
+            </ion-input>
+            <ion-button
+              slot="end"
+              fill="clear"
+              size="small"
+              (click)="generateSKU()"
+              [disabled]="!productForm.get('name')?.value">
+              Generate
+            </ion-button>
+            <ion-note slot="error" *ngIf="isFieldInvalid('sku')">
+              {{ getFieldError('sku') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- Items -->
+          <ion-item lines="full" *ngIf="availableItems.length > 0">
+            <ion-label position="stacked">Linked Items</ion-label>
+            <ion-select 
+              formControlName="itemIds" 
+              placeholder="Select items to link"
+              interface="popover"
+              multiple="true">
+              <ion-select-option 
+                *ngFor="let item of availableItems" 
+                [value]="item.id">
+                {{ item.name }} - ${{ item.price }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Image URL -->
+          <ion-item [class.ion-invalid]="isFieldInvalid('imageUrl')" lines="full">
+            <ion-label position="stacked">Image URL</ion-label>
+            <ion-input
+              formControlName="imageUrl"
+              placeholder="https://example.com/image.jpg">
+            </ion-input>
+            <ion-note slot="error" *ngIf="isFieldInvalid('imageUrl')">
+              {{ getFieldError('imageUrl') }}
+            </ion-note>
+          </ion-item>
+
+          <!-- Image Preview -->
+          <div *ngIf="productForm.get('imageUrl')?.value" class="image-preview">
+            <img [src]="productForm.get('imageUrl')?.value" [alt]="productForm.get('name')?.value" />
+          </div>
+
+          <!-- Active Status -->
+          <ion-item lines="none">
+            <ion-checkbox formControlName="isActive" slot="start"></ion-checkbox>
+            <ion-label>
+              <h3>Active Product</h3>
+              <p>Product will be visible and available for purchase</p>
+            </ion-label>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="isSaving || productForm.invalid"
+          color="primary">
+          <ion-spinner *ngIf="isSaving" name="crescent" slot="start"></ion-spinner>
+          <ion-icon *ngIf="!isSaving" name="save-outline" slot="start"></ion-icon>
+          {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Product' : 'Create Product') }}
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          (click)="cancel()"
+          [disabled]="isSaving">
+          <ion-icon name="close-outline" slot="start"></ion-icon>
+          Cancel
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>

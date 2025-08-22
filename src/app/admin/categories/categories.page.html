@@ -1,0 +1,156 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Manage Categories</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="categories-container">
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading categories...</p>
+    </div>
+
+    <!-- Categories List -->
+    <div *ngIf="!isLoading">
+      <div *ngIf="categories.length === 0" class="empty-state">
+        <ion-icon name="pricetags-outline" class="empty-icon"></ion-icon>
+        <h3>No categories found</h3>
+        <p>Start by creating your first category</p>
+        <ion-button fill="outline" (click)="openAddModal()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Add Category
+        </ion-button>
+      </div>
+
+      <ion-list *ngIf="categories.length > 0">
+        <ion-item *ngFor="let category of categories" lines="full">
+          <ion-label>
+            <h2>{{ category.name }}</h2>
+            <p *ngIf="category.description">{{ category.description }}</p>
+            <div class="category-meta">
+              <ion-badge [color]="category.isActive ? 'success' : 'medium'">
+                {{ category.isActive ? 'Active' : 'Inactive' }}
+              </ion-badge>
+              <ion-badge color="primary" *ngIf="category.itemCount !== undefined">
+                {{ category.itemCount }} items
+              </ion-badge>
+              <span class="created-date">
+                Created: {{ category.createdAt | date:'short' }}
+              </span>
+            </div>
+          </ion-label>
+          <div class="category-actions">
+            <ion-button fill="clear" size="small" (click)="viewCategoryItems(category)" title="View Items">
+              <ion-icon name="list-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="addItemToCategory(category)" title="Add Item">
+              <ion-icon name="add-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="openEditModal(category)" title="Edit Category">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" color="danger" size="small" (click)="deleteCategory(category)" title="Delete Category">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="secondary" (click)="openAddModal()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Category Form Modal -->
+  <ion-modal [isOpen]="isModalOpen" (willDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>{{ isEditMode ? 'Edit Category' : 'Add Category' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <div class="modal-content">
+          <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+            <ion-card>
+              <ion-card-content>
+                <!-- Category Name -->
+                <ion-item [class.ion-invalid]="isFieldInvalid('name')" lines="full">
+                  <ion-label position="stacked">Category Name *</ion-label>
+                  <ion-input
+                    formControlName="name"
+                    placeholder="Enter category name"
+                    maxlength="50">
+                  </ion-input>
+                  <ion-note slot="error" *ngIf="isFieldInvalid('name')">
+                    {{ getFieldError('name') }}
+                  </ion-note>
+                </ion-item>
+
+                <!-- Description -->
+                <ion-item [class.ion-invalid]="isFieldInvalid('description')" lines="full">
+                  <ion-label position="stacked">Description</ion-label>
+                  <ion-textarea
+                    formControlName="description"
+                    placeholder="Enter category description (optional)"
+                    rows="3"
+                    maxlength="200">
+                  </ion-textarea>
+                  <ion-note slot="error" *ngIf="isFieldInvalid('description')">
+                    {{ getFieldError('description') }}
+                  </ion-note>
+                </ion-item>
+
+                <!-- Active Status -->
+                <ion-item lines="none">
+                  <ion-checkbox formControlName="isActive" slot="start"></ion-checkbox>
+                  <ion-label>
+                    <h3>Active Category</h3>
+                    <p>Category will be available for product assignment</p>
+                  </ion-label>
+                </ion-item>
+              </ion-card-content>
+            </ion-card>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <ion-button
+                expand="block"
+                type="submit"
+                [disabled]="isSaving || categoryForm.invalid"
+                color="primary">
+                <ion-spinner *ngIf="isSaving" name="crescent" slot="start"></ion-spinner>
+                <ion-icon *ngIf="!isSaving" name="save-outline" slot="start"></ion-icon>
+                {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Category' : 'Create Category') }}
+              </ion-button>
+
+              <ion-button
+                expand="block"
+                fill="outline"
+                (click)="closeModal()"
+                [disabled]="isSaving">
+                <ion-icon name="close-outline" slot="start"></ion-icon>
+                Cancel
+              </ion-button>
+            </div>
+          </form>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

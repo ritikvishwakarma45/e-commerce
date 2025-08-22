@@ -1,0 +1,132 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="getBackUrl()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ getPageTitle() }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="refresh-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="items-container">
+    <!-- Search Bar -->
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      (ionInput)="searchItems($event)"
+      placeholder="Search items..."
+      show-clear-button="focus">
+    </ion-searchbar>
+
+    <!-- Category Info -->
+    <ion-card *ngIf="category" class="category-info-card">
+      <ion-card-content>
+        <div class="category-info">
+          <ion-icon name="pricetag-outline" class="category-icon"></ion-icon>
+          <div>
+            <h3>{{ category.name }}</h3>
+            <p *ngIf="category.description">{{ category.description }}</p>
+            <ion-badge color="primary">{{ items.length }} items</ion-badge>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading items...</p>
+    </div>
+
+    <!-- Items List -->
+    <div *ngIf="!isLoading">
+      <div *ngIf="filteredItems.length === 0" class="empty-state">
+        <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+        <h3>No items found</h3>
+        <p *ngIf="searchTerm">Try adjusting your search terms</p>
+        <p *ngIf="!searchTerm && category">No items in this category yet</p>
+        <p *ngIf="!searchTerm && !category">No items created yet</p>
+        <ion-button fill="outline" (click)="addItem()">
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Add Item
+        </ion-button>
+      </div>
+
+      <ion-grid *ngIf="filteredItems.length > 0">
+        <ion-row>
+          <ion-col size="12" size-md="6" size-lg="4" *ngFor="let item of filteredItems">
+            <ion-card class="item-card">
+              <div class="item-image" *ngIf="item.imageUrl">
+                <img [src]="item.imageUrl" [alt]="item.name" />
+              </div>
+              <div class="item-image placeholder" *ngIf="!item.imageUrl">
+                <ion-icon name="image-outline"></ion-icon>
+              </div>
+
+              <ion-card-header>
+                <ion-card-title>{{ item.name }}</ion-card-title>
+                <div class="item-meta">
+                  <ion-chip *ngIf="!categoryId && item.categoryName" color="primary" outline>
+                    <ion-icon name="pricetag-outline"></ion-icon>
+                    <ion-label>{{ item.categoryName }}</ion-label>
+                  </ion-chip>
+                  <ion-badge [color]="item.isActive ? 'success' : 'medium'">
+                    {{ item.isActive ? 'Active' : 'Inactive' }}
+                  </ion-badge>
+                </div>
+              </ion-card-header>
+
+              <ion-card-content>
+                <p class="item-description" *ngIf="item.description">{{ item.description }}</p>
+                
+                <div class="item-details">
+                  <div class="detail-row" *ngIf="item.price">
+                    <span class="label">Price:</span>
+                    <span class="value price">{{ formatPrice(item.price) }}</span>
+                  </div>
+                  
+                  <!-- Specifications -->
+                  <div *ngIf="item.specifications && getSpecificationKeys(item.specifications).length > 0" class="specifications">
+                    <h4>Specifications:</h4>
+                    <div class="spec-grid">
+                      <div *ngFor="let spec of getSpecificationKeys(item.specifications)" class="spec-item">
+                        <span class="spec-label">{{ spec }}:</span>
+                        <span class="spec-value">{{ getSpecificationValue(item.specifications, spec) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="item-actions">
+                  <ion-button fill="outline" size="small" (click)="editItem(item)">
+                    <ion-icon name="create-outline" slot="start"></ion-icon>
+                    Edit
+                  </ion-button>
+                  <ion-button fill="outline" color="danger" size="small" (click)="deleteItem(item)">
+                    <ion-icon name="trash-outline" slot="start"></ion-icon>
+                    Delete
+                  </ion-button>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="secondary" (click)="addItem()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
