@@ -1,27 +1,307 @@
-#container {
-  text-align: center;
+// Header Styling
+.custom-header {
+  --background: #fff;
+  --color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-  position: absolute;
+ion-content {
+  --background: #f8f9fa;
+}
+
+// Hero Banner
+.hero-banner {
+  background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+  margin: 16px;
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+}
+
+.banner-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-text {
+  flex: 1;
+  color: white;
+  
+  h3 {
+    font-size: 12px;
+    font-weight: 400;
+    margin: 0 0 8px 0;
+    opacity: 0.9;
+  }
+  
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 1px;
+  }
+}
+
+.banner-image {
+  flex: 0 0 80px;
+  height: 80px;
+  position: relative;
+}
+
+.honey-jar {
+  width: 60px;
+  height: 80px;
+  background: linear-gradient(45deg, #d4af37 0%, #ffd700 50%, #ffed4e 100%);
+  border-radius: 8px 8px 12px 12px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 16px;
+    background: #8d6e63;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  &::after {
+    content: '🍯';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+  }
+}
+
+// Categories Section
+.categories-section {
+  padding: 20px 16px;
+  
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin: 0 0 16px 0;
+    letter-spacing: 0.5px;
+  }
+  
+  ion-segment {
+    --background: transparent;
+    --indicator-color: #ff9800;
+    --indicator-height: 3px;
+    --indicator-box-shadow: none;
+    --indicator-transition: all 0.3s ease-in-out;
+    border-radius: 12px;
+    background: #f8f9fa;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    
+    ion-segment-button {
+      --background: transparent;
+      --background-checked: #ffffff;
+      --color: #666;
+      --color-checked: #ff9800;
+      --border-radius: 8px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
+      --transition: all 0.3s ease-in-out;
+      min-width: 80px;
+      margin: 2px;
+      
+      &.segment-button-checked {
+        box-shadow: 0 2px 12px rgba(255, 152, 0, 0.2);
+        transform: translateY(-1px);
+      }
+      
+      .segment-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        
+        ion-label {
+          font-size: 11px;
+          font-weight: 500;
+          margin: 0;
+          white-space: nowrap;
+          transition: all 0.3s ease;
+        }
+      }
+      
+      &.segment-button-checked .segment-content ion-label {
+        font-weight: 600;
+        color: #ff9800;
+      }
+    }
+  }
+}
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+// Enhanced category icons with better colors and hover effects
+.honey-icon {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  color: #ff9800;
+  &::before { content: '🍯'; }
+}
+
+.honeycomb-icon {
+  background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+  color: #ffc107;
+  &::before { content: '🍯'; }
+}
+
+.medicine-icon {
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+  color: #4caf50;
+  &::before { content: '💊'; }
+}
+
+.supplements-icon {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  color: #9c27b0;
+  &::before { content: '🧪'; }
+}
+
+.honey-products-icon {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #2196f3;
+  &::before { content: '🥄'; }
+}
+
+// Active state animations for category icons
+ion-segment-button.segment-button-checked .category-icon {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+// Smooth scrolling for segment
+ion-segment {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Featured Products
+.featured-section {
+  padding: 0 16px 20px;
+  
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin: 0 0 16px 0;
+    letter-spacing: 0.5px;
+  }
+}
+
+.products-grid {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  
+  span {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    text-align: center;
+  }
+}
+
+.product-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.honey-gel {
+  background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+  &::before { content: '🧴'; }
+}
+
+.honey-shampoo {
+  background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+  &::before { content: '🧴'; }
+}
+
+.honey-cream {
+  background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
+  &::before { content: '🧴'; }
+}
+
+// Bottom Navigation
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  background: white;
+  display: flex;
+  padding: 8px 0;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  color: #999;
+  
+  ion-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  
+  span {
+    font-size: 10px;
+  }
+  
+  &.active {
+    color: #ff9800;
+  }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+// Add padding to content to account for fixed bottom nav
+ion-content {
+  --padding-bottom: 80px;
 }

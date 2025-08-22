@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateProfile, UserCredential } from '@angular/fire/auth';
-import { from, Observable } from 'rxjs';
+import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, UserCredential, authState } from '@angular/fire/auth';
+import { from, Observable, firstValueFrom } from 'rxjs';
 import { 
   Firestore, 
   doc, 
@@ -18,69 +18,71 @@ import {
 })
 export class AuthService {
 
-  auth = inject(Auth)    // <--- Correctly injecting Auth
-  db = inject(Firestore) // <--- Correctly injecting Firestore
+  private auth = inject(Auth);
+  private db = inject(Firestore);
+  private injector = inject(Injector);
 
   constructor() { }
 
-  // ... (rest of your service methods)
   register(formValue: any): Observable<{ user: any, userData: any }> {
-   return new Observable((observer) => {
-     createUserWithEmailAndPassword(this.auth, formValue.email, formValue.password)
-       .then(async (userCredential: UserCredential) => {
-         const user = userCredential.user;
-         
-         try {
-           // Update user profile with display name if provided
-           if (formValue.name) {
-             await updateProfile(user, {
-               displayName: formValue.name
-             });
-           }
-  
-           // Prepare user data object for Firestore
-           const userData: any = {
-             ...formValue,
-             uid: user.uid,
-           };
-           // Remove password and confirmPassword from the data to be stored
-           const { password, confirmPassword, ...dataToStore } = { ...formValue, ...userData };
-  
-           // Save user data to Firestore users collection
-           const userDocRef: DocumentReference = doc(this.db, `users/${user.uid}`);
-           await setDoc(userDocRef, dataToStore);
-  
-           console.log('User data saved to Firestore successfully');
-           
-           observer.next({ user, userData: dataToStore });
-           observer.complete();
-           
-         } catch (firestoreError) {
-           console.error('Error saving user data to Firestore:', firestoreError);
-           // Even if Firestore fails, we still have the authenticated user
-           observer.next({ user, userData: null });
-           observer.complete();
-         }
-         
-       })
-       .catch((error) => {
-         console.error('Authentication error:', error);
-         observer.error(error);
-       });
-   });
+    return new Observable((observer) => {
+      createUserWithEmailAndPassword(this.auth, formValue.email, formValue.password)
+        .then(async (userCredential: UserCredential) => {
+          const user = userCredential.user;
+          
+          try {
+            // Update user profile with display name if provided
+            if (formValue.name) {
+              await updateProfile(user, {
+                displayName: formValue.name
+              });
+            }
+   
+            // Use runInInjectionContext for Firestore operations
+            const dataToStore = await runInInjectionContext(this.injector, async () => {
+              // Prepare user data object for Firestore
+              const userData: any = {
+                ...formValue,
+                uid: user.uid,
+              };
+              // Remove password and confirmPassword from the data to be stored
+              const { password, confirmPassword, ...dataToStore } = { ...formValue, ...userData };
+   
+              // Save user data to Firestore users collection
+              const userDocRef: DocumentReference = doc(this.db, `users/${user.uid}`);
+              await setDoc(userDocRef, dataToStore);
+   
+              console.log('User data saved to Firestore successfully');
+              return dataToStore;
+            });
+            
+            observer.next({ user, userData: dataToStore });
+            observer.complete();
+            
+          } catch (firestoreError) {
+            console.error('Error saving user data to Firestore:', firestoreError);
+            // Even if Firestore fails, we still have the authenticated user
+            observer.next({ user, userData: null });
+            observer.complete();
+          }
+          
+        })
+        .catch((error) => {
+          console.error('Authentication error:', error);
+          observer.error(error);
+        });
+    });
   }
 
   async getCurrentUserData(): Promise<any | null> {
-  // Return a promise that resolves only once the auth state is known.
-  return new Promise((resolve) => {
-    // This listener will be called immediately with the current state and then whenever the state changes.
-    // We only need the first emission, so we unsubscribe immediately after.
-    const unsubscribe = onAuthStateChanged(this.auth, async (user: any | null) => {
-      unsubscribe(); // Clean up the listener after the first check
-
+    try {
+      // Use authState observable which is properly integrated with Angular's injection context
+      const user = await firstValueFrom(authState(this.auth));
+      
       // If a user is logged in
       if (user) {
-        try {
+        // Use runInInjectionContext for Firestore operations
+        return await runInInjectionContext(this.injector, async () => {
           // Get a reference to the user's document in the 'users' collection
           const userDocRef = doc(this.db, 'users', user.uid);
           
@@ -89,30 +91,28 @@ export class AuthService {
 
           // If the document exists, extract the data
           if (userDocSnap.exists()) {
-            const userData:any = userDocSnap.data();
+            const userData: any = userDocSnap.data();
             
             // Combine the data and add the isAdmin flag
-            const currentUser = {
+            return {
               uid: user.uid,
               ...userData,
               isAdmin: userData.role === 'admin'
             };
-            resolve(currentUser);
           } else {
             // User is authenticated, but their document does not exist
-            resolve(null);
+            return null;
           }
-        } catch (error) {
-          console.error('Error fetching user data from Firestore:', error);
-          resolve(null);
-        }
+        });
       } else {
         // No user is authenticated
-        resolve(null);
+        return null;
       }
-    });
-  });
-}
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  }
 
   login(value:any): Observable<UserCredential> {
     // signInWithEmailAndPassword returns a Promise, so we use `from` to convert it to an Observable.

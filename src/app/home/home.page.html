@@ -1,20 +1,106 @@
-<ion-header [translucent]="true">
+<ion-header class="custom-header">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-buttons slot="start">
+      <ion-button fill="clear">
+        <ion-icon name="menu-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Honey</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <ion-icon name="search-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="banner-content">
+      <div class="banner-text">
+        <h3>Get Instant Fresh Delivery At Your Door</h3>
+        <h2>ORGANIC HONEY</h2>
+      </div>
+      <div class="banner-image">
+        <div class="honey-jar"></div>
+      </div>
+    </div>
+  </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Categories Section -->
+  <div class="categories-section">
+    <h4>CATEGORIES</h4>
+    <ion-segment [(ngModel)]="selectedCategory" (ionChange)="onCategoryChange($event)" scrollable="true">
+      <ion-segment-button value="honey">
+        <div class="segment-content">
+          <div class="category-icon honey-icon"></div>
+          <ion-label>Honey</ion-label>
+        </div>
+      </ion-segment-button>
+      <ion-segment-button value="honeycomb">
+        <div class="segment-content">
+          <div class="category-icon honeycomb-icon"></div>
+          <ion-label>Honeycomb</ion-label>
+        </div>
+      </ion-segment-button>
+      <ion-segment-button value="medicine">
+        <div class="segment-content">
+          <div class="category-icon medicine-icon"></div>
+          <ion-label>Medicine</ion-label>
+        </div>
+      </ion-segment-button>
+      <ion-segment-button value="supplements">
+        <div class="segment-content">
+          <div class="category-icon supplements-icon"></div>
+          <ion-label>Supplements</ion-label>
+        </div>
+      </ion-segment-button>
+      <ion-segment-button value="honey-products">
+        <div class="segment-content">
+          <div class="category-icon honey-products-icon"></div>
+          <ion-label>Honey Products</ion-label>
+        </div>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Featured Products -->
+  <div class="featured-section">
+    <h4>FEATURED PRODUCTS</h4>
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-image honey-gel"></div>
+        <span>Honey Gel</span>
+      </div>
+      <div class="product-card">
+        <div class="product-image honey-shampoo"></div>
+        <span>Honey Shampoo</span>
+      </div>
+      <div class="product-card">
+        <div class="product-image honey-cream"></div>
+        <span>Honey Cream</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <ion-icon name="home"></ion-icon>
+      <span>Home</span>
+    </div>
+    <div class="nav-item">
+      <ion-icon name="grid-outline"></ion-icon>
+      <span>Categories</span>
+    </div>
+    <div class="nav-item">
+      <ion-icon name="bag-outline"></ion-icon>
+      <span>Cart</span>
+    </div>
+    <div class="nav-item">
+      <ion-icon name="person-outline"></ion-icon>
+      <span>More</span>
+    </div>
   </div>
 </ion-content>
